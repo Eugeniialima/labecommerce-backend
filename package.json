@@ -4,11 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start":"node index.js",
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
-    
     "type": "module",
     "url": "git+https://github.com/Eugeniialima/labecommerce-backend.git"
   },
@@ -18,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/Eugeniialima/labecommerce-backend/issues"
   },
-  "homepage": "https://github.com/Eugeniialima/labecommerce-backend#readme"
+  "homepage": "https://github.com/Eugeniialima/labecommerce-backend#readme",
+  "devDependencies": {
+    "typescript": "^4.9.4"
+  }
 }

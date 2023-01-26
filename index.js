@@ -8,7 +8,6 @@ if (!value) {
 const result = "bananinha"
     console.log(result);
 
-
 }
     
 
