@@ -33,7 +33,7 @@ console.log(getAllUsers());
 exports.products = [
     {
         id: "p001",
-        name: "garrafa",
+        name: "Garrafa",
         price: 59,
         category: types_1.CATEGORY.ACCESSORIES
     },
