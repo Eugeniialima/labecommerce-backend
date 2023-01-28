@@ -77,6 +77,8 @@ app.post('/purchases', (req: Request, res: Response) =>{
     res.status(201).send("Compra realizada com sucesso!")
 })
 
+//Get Products By Id
+
 app.get('/products/:id', (req: Request, res: Response) => {
     const id = req.params.id as string
     const result = products.find((product) => {
@@ -86,7 +88,7 @@ app.get('/products/:id', (req: Request, res: Response) => {
     console.log("objeto product encontrado")
 })
 
-//Get User Purchases by User id
+//Get User Purchases By User id
 
 app.get('/users/:id/purchases', (req: Request, res: Response) => {
     const id = req.params.id as string
@@ -111,6 +113,19 @@ app.delete('/users/:id', (req: Request, res: Response) => {
         users.splice(userIndex, 1)
     }
     res.status(200).send("Usuário deletado com sucesso")
+})
+
+app.delete('/products/:id', (req: Request, res: Response) => {
+    const id = req.params.id as string
+
+    const productIndex = products.findIndex((product) => {
+        return product.id === id
+    })
+
+    if (productIndex >= 0) {
+        products.splice(productIndex, 1)
+    }
+    res.status(200).send("Produto apagado com sucesso")
 })
 
 // Exercício 3
