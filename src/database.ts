@@ -1,4 +1,4 @@
-import { getMaxListeners } from "process";
+
 import { TProduct, TPurchase, TUser } from "./types";
 import { CATEGORY } from "./types"
 
@@ -79,8 +79,8 @@ export const purchases: TPurchase[] = [
     {
     userId: "u001",
     productId: "p001",
-    quantify: 105,
-    totalPrice: 105 * 59
+    quantify: 15,
+    totalPrice: 15 * 59
     },
     {
         userId: "u002",
