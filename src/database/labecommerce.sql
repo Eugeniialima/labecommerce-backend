@@ -25,11 +25,11 @@ CREATE TABLE products (
 
 INSERT INTO products (id, name, price, category)
 VALUES 
-('p001', 'O duque e eu', 37.90, 'book'),
-('p002', 'Copo Stanley', 99, 'car'),
-('p003', 'Notebook Dell', 3000, 'dog'),
-('p004', 'Iphone 14 pro max', 9899.99, 'smartphone'),
-('p005', 'Aplee watch', 3999.90, 'clothes');
+('p001', 'O duque e eu', 37.90, 'livro'),
+('p002', 'Copo Stanley', 99, 'acessorios'),
+('p003', 'Notebook Dell', 3000, 'eletrônico'),
+('p004', 'Iphone 14 pro max', 9899.99, 'eletrônico'),
+('p005', 'Aplee watch', 3999.90, 'eletrônico');
 
 PRAGMA table_info('products');
 
