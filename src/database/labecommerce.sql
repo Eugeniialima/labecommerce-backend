@@ -34,3 +34,29 @@ VALUES
 PRAGMA table_info('products');
 
 SELECT * FROM products;
+
+SELECT * FROM products
+WHERE name like '%hone%';
+
+SELECT * FROM products
+WHERE id like '%p002';
+
+DELETE FROM products
+WHERE id = 'p003';
+
+UPDATE users
+SET 
+id = 'u007',
+email = 'novousuarioeditado',
+password = 'digimon123'
+WHERE id = 'u004';
+
+SELECT * FROM users;
+
+UPDATE products
+SET 
+id = 'p010',
+name = 'Iphone 15 pro max',
+price = 15000,
+category = 'eletrônico'
+WHERE id = 'p004';
