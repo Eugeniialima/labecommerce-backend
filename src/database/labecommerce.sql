@@ -1,4 +1,4 @@
--- Active: 1675034930807@@127.0.0.1@3306
+-- Active: 1675946368465@@127.0.0.1@3306
 
 CREATE TABLE users (
     id TEXT PRIMARY KEY UNIQUE NOT NULL,
@@ -60,3 +60,44 @@ name = 'Iphone 15 pro max',
 price = 15000,
 category = 'eletrônico'
 WHERE id = 'p004';
+
+CREATE TABLE purchases
+(
+    id TEXT PRIMARY KEY UNIQUE NOT NULL,
+    total_price REAL NOT NULL,
+    paid INTERGE NOT NULL, 
+    delivered_at TEXT, 
+    buyer_id TEXT NOT NULL FOREIGN KEY (users_id) REFERENCES users(id) 
+)
+INSERT INTO users (id, email, password)
+VALUES 
+    ("u001", "maria01@gmail.com", "9834"),
+    ("u002", "alex1@gmail.com", "9asd4"),
+    ("u003", "lalalandia@gmail.com", "13.6548");
+
+INSERT INTO users (id, email, password)
+VALUES ("u004", "banananinha@gmail.com", "why235");
+
+INSERT into purchases (id, total_price, paid, delivered_at, buyer_id)
+VALUES
+    ("pur001", 9000, 0, NULL, "u001"),
+    ("pur002", 3090, 0, NULL, "u001"),
+    ("pur003", 99, 0, NULL, "u002"),
+    ("pur004", 9899.99, 0, NULL, "u002"),
+    ("pur005", 301.90, 0, NULL, "u003"),
+    ("pur006", 4136.80, 0, NULL, "u003"),
+    ("pur007", 136.90, 0, NULL, "u004"),
+    ("pur008", 16989.89, 0, NULL, "u004");
+
+    SELECT * FROM purchases;
+
+    UPDATE purchases
+    SET 
+        paid = 1,
+        delivered_at = DATETIME('now')
+    WHERE id = "pu001";
+
+        SELECT * FROM purchases
+    INNER JOIN users
+    ON purchases.buyer_id = users.id
+    where users.id = "u001";
