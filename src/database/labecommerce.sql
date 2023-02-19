@@ -1,9 +1,32 @@
--- Active: 1675034930807@@127.0.0.1@3306
+-- Active: 1676598676627@@127.0.0.1@3306
 
 CREATE TABLE users (
     id TEXT PRIMARY KEY UNIQUE NOT NULL,
     email TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL
+);
+CREATE TABLE products (
+    id TEXT PRIMARY KEY UNIQUE NOT NULL,
+    name TEXT NOT NULL,
+    price REAL NOT NULL,
+    category TEXT NOT NULL
+);
+CREATE TABLE purchases
+(
+    id TEXT PRIMARY KEY UNIQUE NOT NULL,
+    total_price REAL NOT NULL,
+    paid INTERGE NOT NULL, 
+    delivered_at TEXT, 
+    buyer_id TEXT NOT NULL,
+     FOREIGN KEY (buyer_id) REFERENCES users(id) 
+);
+
+CREATE TABLE purchases_products (
+    purchase_id TEXT NOT NULL,
+    product_id TEXT NOT NULL,
+    quantity INTEGER NOT NULL,
+    FOREIGN KEY (purchase_id) REFERENCES purchases (id),
+    FOREIGN KEY (product_id) REFERENCES products (id)
 );
 
 INSERT INTO users (id, email, password)
@@ -16,12 +39,7 @@ PRAGMA table_info('users');
 
 SELECT * FROM users;
 
-CREATE TABLE products (
-    id TEXT PRIMARY KEY UNIQUE NOT NULL,
-    name TEXT NOT NULL,
-    price REAL NOT NULL,
-    category TEXT NOT NULL
-);
+
 
 INSERT INTO products (id, name, price, category)
 VALUES 
@@ -60,3 +78,64 @@ name = 'Iphone 15 pro max',
 price = 15000,
 category = 'eletrônico'
 WHERE id = 'p004';
+
+
+INSERT INTO users (id, email, password)
+VALUES 
+    ("u001", "maria01@gmail.com", "9834"),
+    ("u002", "alex1@gmail.com", "9asd4"),
+    ("u003", "lalalandia@gmail.com", "13.6548");
+
+INSERT INTO users (id, email, password)
+VALUES ("u004", "banananinha@gmail.com", "why235");
+
+INSERT into purchases (id, total_price, paid, delivered_at, buyer_id)
+VALUES
+    ("pur001", 9000, 0, NULL, "u001"),
+    ("pur002", 3099, 0, NULL, "u001"),
+    ("pur003", 99, 0, NULL, "u002"),
+    ("pur004", 9899.99, 0, NULL, "u002"),
+    ("pur005", 3999.90, 0, NULL, "u003"),
+    ("pur006", 4136.80, 0, NULL, "u003"),
+    ("pur007", 136.90, 0, NULL, "u004"),
+    ("pur008", 13889.98, 0, NULL, "u004");
+
+    SELECT * FROM purchases;
+
+    UPDATE purchases
+    SET 
+        paid = 1,
+        delivered_at = DATETIME('now')
+    WHERE id = "pu001";
+
+        SELECT * FROM purchases
+    INNER JOIN users
+    ON purchases.buyer_id = users.id
+    where users.id = "u001";
+
+
+
+
+INSERT INTO purchases_products 
+VALUES
+    ("pur001", "p003", 3),
+    ("pur002", "p003", 1),   
+    ("pur002", "p002", 1),
+    ("pur003", "p002", 1),
+    ("pur004", "p004", 1),
+    ("pur005", "p005", 1),
+    ("pur006", "p001", 1),
+    ("pur006", "p002", 1),
+    ("pur006", "p005", 1),
+    ("pur007", "p001", 1),
+    ("pur007", "p002", 1),
+    ("pur008", "p004", 1),
+    ("pur008", "p005", 1);
+
+    SELECT * FROM purchases_products;
+
+SELECT * FROM purchases_products
+INNER JOIN purchases
+ON purchases_products.purchase_id = purchases.id
+INNER JOIN products
+ON purchases_products.product_id = products.id;
