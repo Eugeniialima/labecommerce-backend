@@ -2,7 +2,8 @@ import {users, products, purchases} from "./database"
 import express, { Request, Response} from 'express';
 import cors from 'cors'
 import { CATEGORY, TProduct, TPurchase, TUser } from "./types";
-// import { createUser, getAllUsers, createProduct, getAllProducts, getProductById, createPurchase, getAllPurchasesFromUserId } from "./database"
+import { createUser, getAllUsers, createProduct, getAllProducts, getProductById, createPurchase, getAllPurchasesFromUserId } from "./database"
+import { db } from './database/knex';
 
 console.log(users);
 console.log(products);
@@ -17,32 +18,57 @@ app.listen(3003, () => {
     console.log("Servidor rodando na porta 3003");
 });
 
-app.get('/users', (req: Request, res: Response) => {
+app.get('/users', async (req: Request, res: Response) => {
     try{
-        res.status(200).send(users)
-    } catch (error:any){
-        res.status(404)
-        res.send(error.message)
+        const result = await db.raw(`
+            SELECT * FROM users;
+        `)
+        res.status(200).send(result)
+    } catch (error: any) {
+        console.log(error)
+
+        if (res.statusCode === 200) {
+            res.status(500)
+        }
+
+        if (error instanceof Error) {
+            res.send(error.message)
+        } else {
+            res.send("Erro inesperado")
+        }
     }
-  });
+});
 
-  app.get('/products', (req: Request, res: Response) => {
+  app.get('/products', async (req: Request, res: Response) => {
    try {
-    res.status(200).send(products)
-   } catch (error:any) {
-    res.status(404)
-    res.send(error.message)
-     } 
-    });
+    const result = await db.raw(`
+    SELECT * FROM products;
+`)
+    res.status(200).send(result)
+   } catch (error: any) {
+    console.log(error)
 
-  app.get('/products/search', (req: Request, res: Response) => {
+    if (res.statusCode === 200) {
+        res.status(500)
+    }
+
+    if (error instanceof Error) {
+        res.send(error.message)
+    } else {
+        res.send("Erro inesperado")
+    }
+}
+});
+
+  app.get('/products/search', async (req: Request, res: Response) => {
     try {
-        const q = req.query.q as string
-        const result: TProduct[] = products.filter((product) => {
-            return product.name.toLowerCase().includes(q.toLowerCase())
-        })
+        const q = req.query.q 
+        const result: TProduct[] = await db.raw(`
+            SELECT * FROM products
+            WHERE name LIKE "%${q}%";
+        `)
 
-        if(q.length <= 2){
+        if(result.length <= 2){
             res.status(400)
             throw new Error("Nome de produto inválido. Nome deve contar no mínimo 2 caracteres")
         }
@@ -57,19 +83,24 @@ app.get('/users', (req: Request, res: Response) => {
     } catch (error: any) {
         console.log(error)
 
-        if(res.statusCode === 200){
+        if (res.statusCode === 200) {
             res.status(500)
         }
-        res.send(error.message)
+
+        if (error instanceof Error) {
+            res.send(error.message)
+        } else {
+            res.send("Erro inesperado")
+        }
     }
-})
+});
 
 //CreateUser
 
-app.post('/users', (req: Request, res: Response) =>{
+app.post('/users', async (req: Request, res: Response) =>{
     try {
-        const {id, email, password} = req.body 
-        if(!id ||  !email || !password) {
+        const {id, name, email, password} = req.body 
+        if(!id || !name || !email || !password) {
             res.status(400)
             throw new Error("Dados inválidos")
         }
@@ -79,15 +110,25 @@ app.post('/users', (req: Request, res: Response) =>{
             throw new Error("'id' deve ser do tipo string.")
         }
 
+        if(typeof name !== "string") {
+            res.status(400)
+            throw new Error("'name' deve ser do tipo string.")
+        }
+
         if(typeof email !== "string") {
             res.status(400)
             throw new Error("'email' deve ser do tipo string.")
         }
 
-        if(typeof password !== "string") {
+              if(typeof password !== "string") {
             res.status(400)
             throw new Error("'password' deve ser do tipo string.")
         }
+
+        await db.raw(`
+         INSERT INTO users (id, name, email, password)
+         VALUES ("${id}", "${name}", "${email}", "${password}")
+         `)
 
     const userId = users.find((user) => user.id === id)
 
@@ -124,13 +165,17 @@ app.post('/users', (req: Request, res: Response) =>{
 })
   
 
-app.post('/products', (req: Request, res: Response) =>{
+app.post('/products', async (req: Request, res: Response) =>{
     try {
-        const {id, name, price, category} = req.body 
-        if(!id ||  !name || !price || !category) {
+        const {id, name, price, category,description, image_url} = req.body 
+        if(!id ||  !name || !price || !category || !description || !image_url) {
             res.status(400)
             throw new Error("Dados inválidos")
         }
+        await db.raw(`
+        INSERT INTO products (id, name, price, category, description, image_url)
+        VALUES ("${id}", "${name}", "${price}", "${category}", "${description}", "${image_url}" )
+       `)
 
         if(typeof id !== "string") {
             res.status(400)
@@ -164,7 +209,9 @@ app.post('/products', (req: Request, res: Response) =>{
             id,
             name,
             price, 
-            category
+            category,
+            description, 
+            image_url
         }
 
         products.push(newProduct)
@@ -376,17 +423,22 @@ app.put('/user/:id', (req:Request, res:Response) => {
 
 app.put('/product/:id', (req:Request, res:Response) => {
     try{
-        const id = req.params.id
+        const id = req.params.id 
 
         if(!(products.find((product) => product.id === id))){
             res.status(404)
             throw new Error("O id do produto não existe. Escolha um produto existente.")
         }
 
+        const newId = req.body.id as string | undefined
         const newName = req.body.name as string | undefined
         const newPrice = req.body.price as number | undefined
         const newCategory = req.body.category as CATEGORY | undefined
 
+        if(!newId){
+            res.status(404)
+            throw new Error("Escreva um novo id.")
+        }
         if(!newName){
             res.status(404)
             throw new Error("Escreva um novo nome.")

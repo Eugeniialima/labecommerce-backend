@@ -2,8 +2,10 @@
 
 CREATE TABLE users (
     id TEXT PRIMARY KEY UNIQUE NOT NULL,
+    name TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
-    password TEXT NOT NULL
+    password TEXT NOT NULL,
+    created_at DEFAULT (DATETIME('now','localtime')) NOT NULL
 );
 CREATE TABLE products (
     id TEXT PRIMARY KEY UNIQUE NOT NULL,
@@ -29,16 +31,18 @@ CREATE TABLE purchases_products (
     FOREIGN KEY (product_id) REFERENCES products (id)
 );
 
-INSERT INTO users (id, email, password)
+INSERT INTO users (id, name, email, password)
 VALUES
-('u001', 'carlos01@email.com', '1sfs'),
-('u002', 'maria02@email.com', '1fdf5'),
-('u003', 'alexfofinho@email.com', '645df');
+('u001', 'Carlos', 'carlos01@email.com', '1sfs'),
+('u002', 'Maria', 'maria02@email.com', '1fdf5'),
+('u003', 'Alex', 'alexfofinho@email.com', '645df');
+
+INSERT INTO users (id, email, name,  password)
+VALUES ('u004','Marcela', 'Marcelina@gmail.com', 'why235');
 
 PRAGMA table_info('users');
 
 SELECT * FROM users;
-
 
 
 INSERT INTO products (id, name, price, category)
@@ -78,16 +82,6 @@ name = 'Iphone 15 pro max',
 price = 15000,
 category = 'eletrônico'
 WHERE id = 'p004';
-
-
-INSERT INTO users (id, email, password)
-VALUES 
-    ("u001", "maria01@gmail.com", "9834"),
-    ("u002", "alex1@gmail.com", "9asd4"),
-    ("u003", "lalalandia@gmail.com", "13.6548");
-
-INSERT INTO users (id, email, password)
-VALUES ("u004", "banananinha@gmail.com", "why235");
 
 INSERT into purchases (id, total_price, paid, delivered_at, buyer_id)
 VALUES
