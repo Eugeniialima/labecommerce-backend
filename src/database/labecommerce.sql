@@ -11,16 +11,19 @@ CREATE TABLE products (
     id TEXT PRIMARY KEY UNIQUE NOT NULL,
     name TEXT NOT NULL,
     price REAL NOT NULL,
-    category TEXT NOT NULL
+    category TEXT NOT NULL,
+    description TEXT NOT NULL, 
+    image_url TEXT NOT NULL
+
 );
-CREATE TABLE purchases
-(
+CREATE TABLE purchases (
     id TEXT PRIMARY KEY UNIQUE NOT NULL,
     total_price REAL NOT NULL,
-    paid INTERGE NOT NULL, 
-    delivered_at TEXT, 
+    paid INTEGER DEFAULT(0) NOT NULL,
+    delivered_at TEXT,
     buyer_id TEXT NOT NULL,
-     FOREIGN KEY (buyer_id) REFERENCES users(id) 
+    created_at TEXT DEFAULT (DATETIME('now','localtime')) NOT NULL,
+    FOREIGN KEY (buyer_id) REFERENCES users (id) ON UPDATE CASCADE
 );
 
 CREATE TABLE purchases_products (
@@ -28,7 +31,7 @@ CREATE TABLE purchases_products (
     product_id TEXT NOT NULL,
     quantity INTEGER NOT NULL,
     FOREIGN KEY (purchase_id) REFERENCES purchases (id),
-    FOREIGN KEY (product_id) REFERENCES products (id)
+    FOREIGN KEY (product_id) REFERENCES products (id) ON UPDATE CASCADE
 );
 
 INSERT INTO users (id, name, email, password)
@@ -45,13 +48,13 @@ PRAGMA table_info('users');
 SELECT * FROM users;
 
 
-INSERT INTO products (id, name, price, category)
+INSERT INTO products (id, name, price, category, description, image_url)
 VALUES 
-('p001', 'O duque e eu', 37.90, 'livro'),
-('p002', 'Copo Stanley', 99, 'acessorios'),
-('p003', 'Notebook Dell', 3000, 'eletrônico'),
-('p004', 'Iphone 14 pro max', 9899.99, 'eletrônico'),
-('p005', 'Aplee watch', 3999.90, 'eletrônico');
+('p001', 'O duque e eu', 37.90, 'livro', 'livro legal','https://picsum.photos/200/300'),
+('p002', 'Copo Stanley', 99, 'acessorios', 'melhor copo da vida','https://picsum.photos/200/300'),
+('p003', 'Notebook Dell', 3000, 'eletrônico', 'computador top para games', 'https://picsum.photos/200/300'),
+('p004', 'Iphone 14 pro max', 9899.99, 'eletrônico', 'celular da modinha', 'https://picsum.photos/200/300'),
+('p005', 'Aplee watch', 3999.90, 'eletrônico', 'relogio modinha 2', 'https://picsum.photos/200/300');
 
 PRAGMA table_info('products');
 
